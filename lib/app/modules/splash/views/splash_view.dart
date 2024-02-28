@@ -1,9 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
+import 'package:rive/rive.dart';
 import 'package:savoniq/app/core/components/components.dart';
 import 'package:savoniq/app/core/globals/globals.dart';
 
@@ -26,7 +26,9 @@ class SplashView extends GetView<SplashController> {
                SizedBox(
                       height: 94.h,
                       width: 73.w,
-                      child: SvgPicture.asset(CustomAssets.kAppLogo)),
+                      child: const RiveAnimation.asset(CustomAssets.kDownloadAnimation,
+                          fit: BoxFit.contain,
+                          )),
                 19.ht,
                 Text.rich(
                   TextSpan(

@@ -87,8 +87,10 @@ class HomeView extends GetView<HomeController> {
                                 text: 'Search',
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
+                                    FocusScope.of(context).unfocus();
                                     hc.getLinksData(
                                         hc.searchController.text.toString());
+                                    
                                   }
                                 },
                                 width: 92.w,
@@ -100,8 +102,45 @@ class HomeView extends GetView<HomeController> {
                         ),
                       ),
                       21.ht,
-                      if (hc.isError)
-                        Column(
+                     if(hc.isError)
+                      if (hc.siteModel != null &&
+                    hc.isLoading == false &&
+                    hc.siteModel.title.toString() != 'null'&&
+                    hc.siteModel.title.isNotEmpty 
+                    )
+                            Column(
+                          children: [
+                            Container(
+                              alignment: Alignment.center,
+                              height: 180.h,
+                              width: 335.w,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(24.r),
+                                color: CustomColors.greybackground,
+                                image: DecorationImage(
+                                    image: NetworkImage(hc.siteModel.thumbnail),
+                                    fit: BoxFit.cover),
+                              ),
+                              child: Image.asset(
+                                CustomAssets.kPlayIcon,
+                                height: 62.h,
+                                width: 62.w,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            21.ht,
+                            CustomElevatedButton(
+                                text: 'DOWNLOAD',
+                                onPressed: () {
+                                  hc.downloadMedia('${hc.siteModel.title}.mp4');
+                                  showProgressDialog(
+                                      message: hc.percentage.toString(),
+                                      value: hc.percentage);
+                                },
+                                width: 335.w),
+                          ],
+                        ) else
+                            Column(
                           children: [
                             Container(
                               alignment: Alignment.center,
@@ -136,48 +175,12 @@ class HomeView extends GetView<HomeController> {
                             CustomElevatedButton(
                                 text: 'Retry',
                                 onPressed: () {
-                                  hc.changeIsError();
                                   hc.onDownloadClose();
                                 },
                                 width: 332.w)
                           ],
                         ),
-                      if (hc.siteModel != null &&
-                          hc.isLoading == false &&
-                          hc.siteModel.title.isNotEmpty &&
-                          hc.siteModel.title.toString() != 'null')
-                        Column(
-                          children: [
-                            Container(
-                              alignment: Alignment.center,
-                              height: 180.h,
-                              width: 335.w,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(24.r),
-                                color: CustomColors.greybackground,
-                                image: DecorationImage(
-                                    image: NetworkImage(hc.siteModel.thumbnail),
-                                    fit: BoxFit.cover),
-                              ),
-                              child: Image.asset(
-                                CustomAssets.kPlayIcon,
-                                height: 62.h,
-                                width: 62.w,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                            21.ht,
-                            CustomElevatedButton(
-                                text: 'DOWNLOAD',
-                                onPressed: () {
-                                  hc.downloadMedia('${hc.siteModel.title}.mp4');
-                                  showProgressDialog(
-                                      message: hc.percentage.toString(),
-                                      value: hc.percentage);
-                                },
-                                width: 335.w),
-                          ],
-                        ),
+
                       if (hc.isLoading == true)
                         Container(
                             height: 180.h,
@@ -188,16 +191,7 @@ class HomeView extends GetView<HomeController> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SizedBox(
-                                  height: 60.h,
-                                  width: 60.w,
-                                  child: CircularProgressIndicator.adaptive(
-                                    strokeWidth: 2,
-                                    backgroundColor: CustomColors.textgrey,
-                                    valueColor: const AlwaysStoppedAnimation(
-                                        CustomColors.primary),
-                                  ),
-                                ),
+                                const CustomLoader(),
                                 5.ht,
                                 Text(
                                   'Searching...',

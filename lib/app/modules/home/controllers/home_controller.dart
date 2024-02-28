@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -10,22 +12,24 @@ import 'package:savoniq/app/modules/home/widgets/download_dialog.dart';
 import 'package:savoniq/app/modules/home/widgets/progress_bar_dialog.dart';
 
 class HomeController extends GetxController {
-  bool isSearchLoading = true;
+ 
   final searchController = TextEditingController();
-
+  
+   bool isSearchLoading = true;
   void changeSearchLoading() {
     isSearchLoading = isSearchLoading;
     update();
   }
 
   bool isError = false;
-   void changeIsError(){
-        isError = !isError;
-        update();
-   }
+
+  void changeIsError(){
+    isError = !isError;
+    update();
+  }
+
 
   bool isSearchIcon = false;
-
   void changeIsSearch() {
     isSearchIcon = isSearchIcon;
     update();
@@ -41,6 +45,12 @@ class HomeController extends GetxController {
     _isLoading = loading;
     update();
   }
+
+  File? myFile;
+   void setFile(File downFile){
+    myFile = downFile;
+    update();
+   }
 
   double _percentage = 0.0;
   double get percentage => _percentage;
@@ -73,10 +83,10 @@ class HomeController extends GetxController {
           }
         }
       }
+       changeIsError();
     } catch (e) {
       Fluttertoast.showToast(msg: 'An error occurred while getting video');
-      changeIsError();
-      toggleLoading(false);
+    
       log('an error occurred in getLinksData ❤❤❤❤ $e');
     } finally {
       _isLoading = false;
@@ -86,8 +96,11 @@ class HomeController extends GetxController {
 
   //Download media
   Future<void> downloadMedia(String title,) async {
+    //  final Directory output = await getTemporaryDirectory();
+    //                         final String newFilePath = '${output.path}/newfile.mp4';
+    //                         File? sendedfile = File(newFilePath);
     final url = _siteModel.links[0].link;
-    File? downloadedFile = await FileDownloader.downloadFile(
+     File? downloadedFile = await FileDownloader.downloadFile(
       url: url,
       name: title,
       notificationType: NotificationType.all,
@@ -100,23 +113,29 @@ class HomeController extends GetxController {
         showDownloadDialog(
             message: siteModel.title.toString(),
             downloadUrl: siteModel.thumbnail,
-            onClose: onDownloadClose, path: path);
+            onClose: (){
+               Get.back();
+            onDownloadClose();
+            } , path: path);
       },
       onDownloadError: (errorMessage) {
         Fluttertoast.showToast(msg: errorMessage);
       },
     );
-
-    print('😍😍😍😍 file path is  : : : ${downloadedFile?.path}');
+    if(downloadedFile != null){
+    setFile(downloadedFile);
+      Fluttertoast.showToast(msg: 'File Downloaded');
+    }else {
+      Fluttertoast.showToast(msg: 'File is null');
+    }
   }
 
   void onDownloadClose() {
+    changeIsError();
     toggleLoading(false);
     _siteModel = null;
      _percentage = 0.0;
      searchController.clear();
     update();
-    Get.back();
-   
   }
 }

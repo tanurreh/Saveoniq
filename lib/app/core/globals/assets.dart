@@ -25,7 +25,7 @@ class CustomAssets {
    static const String kVideoThumbnail= "assets/icons/videothumbnail.png";
     static const String kPlayIcon= "assets/icons/playbutton.png";
     static const String kBlockIcom= "assets/icons/blockicon.svg";
-    static const String KDownloadAnimation = 'assets/icons/downloaderanimation.riv';
+    static const String kDownloadAnimation = 'assets/icons/downloaderanimation.riv';
 
 
 

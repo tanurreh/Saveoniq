@@ -18,7 +18,10 @@ dependencies:
   simple_progress_indicators: ^0.2.0
   get_storage: ^2.1.1
   share_plus: ^7.2.1
-  rive: ^0.12.3
+  rive: ^0.9.1
+  flutter_spinkit: ^5.2.0
+  image_picker: ^1.0.7
+  path_provider: ^2.1.2
 
 dev_dependencies: 
   flutter_lints: ^2.0.0
