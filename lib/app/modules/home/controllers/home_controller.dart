@@ -12,10 +12,9 @@ import 'package:savoniq/app/modules/home/widgets/download_dialog.dart';
 import 'package:savoniq/app/modules/home/widgets/progress_bar_dialog.dart';
 
 class HomeController extends GetxController {
- 
   final searchController = TextEditingController();
-  
-   bool isSearchLoading = true;
+
+  bool isSearchLoading = true;
   void changeSearchLoading() {
     isSearchLoading = isSearchLoading;
     update();
@@ -23,11 +22,10 @@ class HomeController extends GetxController {
 
   bool isError = false;
 
-  void changeIsError(){
+  void changeIsError() {
     isError = !isError;
     update();
   }
-
 
   bool isSearchIcon = false;
   void changeIsSearch() {
@@ -47,10 +45,10 @@ class HomeController extends GetxController {
   }
 
   File? myFile;
-   void setFile(File downFile){
+  void setFile(File downFile) {
     myFile = downFile;
     update();
-   }
+  }
 
   double _percentage = 0.0;
   double get percentage => _percentage;
@@ -83,10 +81,10 @@ class HomeController extends GetxController {
           }
         }
       }
-       changeIsError();
+      changeIsError();
     } catch (e) {
       Fluttertoast.showToast(msg: 'An error occurred while getting video');
-    
+
       log('an error occurred in getLinksData ❤❤❤❤ $e');
     } finally {
       _isLoading = false;
@@ -95,17 +93,18 @@ class HomeController extends GetxController {
   }
 
   //Download media
-  Future<void> downloadMedia(String title,) async {
+  Future<void> downloadMedia(
+    String title,
+  ) async {
     //  final Directory output = await getTemporaryDirectory();
     //                         final String newFilePath = '${output.path}/newfile.mp4';
     //                         File? sendedfile = File(newFilePath);
     final url = _siteModel.links[0].link;
-     File? downloadedFile = await FileDownloader.downloadFile(
+    File? downloadedFile = await FileDownloader.downloadFile(
       url: url,
       name: title,
       notificationType: NotificationType.all,
       onProgress: (String? text, double value) {
-       
         changePercentage(value);
       },
       onDownloadCompleted: (path) {
@@ -113,29 +112,36 @@ class HomeController extends GetxController {
         showDownloadDialog(
             message: siteModel.title.toString(),
             downloadUrl: siteModel.thumbnail,
-            onClose: (){
-               Get.back();
-            onDownloadClose();
-            } , path: path);
+            onClose: () {
+              Get.back();
+              onDownloadClose();
+            },
+            path: path);
       },
       onDownloadError: (errorMessage) {
         Fluttertoast.showToast(msg: errorMessage);
       },
     );
-    if(downloadedFile != null){
-    setFile(downloadedFile);
+    if (downloadedFile != null) {
+      setFile(downloadedFile);
+      log(downloadedFile.path);
       Fluttertoast.showToast(msg: 'File Downloaded');
-    }else {
+    } else {
       Fluttertoast.showToast(msg: 'File is null');
     }
+  }
+
+  getFileData() async {
+    log('Getting file data from controller ${myFile.toString()}');
+    return await myFile!.readAsBytes();
   }
 
   void onDownloadClose() {
     changeIsError();
     toggleLoading(false);
     _siteModel = null;
-     _percentage = 0.0;
-     searchController.clear();
+    _percentage = 0.0;
+    searchController.clear();
     update();
   }
 }
