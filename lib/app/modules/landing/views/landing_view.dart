@@ -18,6 +18,9 @@ class LandingView extends GetView<LandingController> {
         builder: (lc) {
           return Scaffold(
               extendBody: true,
+               resizeToAvoidBottomInset: false,
+
+            
 
               // Container(
               //   height: 120.h,

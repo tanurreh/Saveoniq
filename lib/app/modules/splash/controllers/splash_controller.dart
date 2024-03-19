@@ -14,7 +14,7 @@ class SplashController extends GetxController {
       
      bool? isShow =  box.read('showTermsAndCond');
       if(isShow != null){
-        Get.toNamed(Routes.LANDING);
+        Get.offAllNamed(Routes.LANDING);
       }else{
       Get.toNamed(Routes.TERMSANDCONDITION);
       }
