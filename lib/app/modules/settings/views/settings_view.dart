@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:savoniq/app/core/components/components.dart';
 import 'package:savoniq/app/core/globals/globals.dart';
+import 'package:savoniq/app/core/globals/toc_and_pp.dart';
 import 'package:savoniq/app/modules/settings/views/toc_pp_screen.dart';
 import 'package:savoniq/app/modules/settings/widget/setting_button.dart';
 
@@ -35,7 +35,7 @@ class SettingsView extends GetView<SettingsController> {
                     width: 50.w,
                   ),
                   onTap: () {
-                    Get.to(()=> TocAndPpScreen(title: 'Terms & Condition', details: termAndCond,));
+                    Get.to(()=> TocAndPpScreen(title: 'Terms & Condition', details: TocAndPP.termsAndCondition,));
                   },
                 ),
                 10.ht,
@@ -45,7 +45,7 @@ class SettingsView extends GetView<SettingsController> {
                     width: 50.w,
                   ),
                   onTap: () {
-                       Get.to(()=> TocAndPpScreen(title: 'Privacy Policy', details: privacypolicy,));
+                       Get.to(()=> TocAndPpScreen(title: 'Privacy Policy', details: TocAndPP.privacyPolicy,));
                   },
                 ),
                 10.ht,
@@ -60,7 +60,7 @@ class SettingsView extends GetView<SettingsController> {
                 //   ),
                 //   onTap: () {},
                 // ),
-                10.ht,
+               // 10.ht,
               ],
             ),
           ),

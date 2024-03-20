@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:savoniq/app/core/components/components.dart';
 import 'package:savoniq/app/core/globals/globals.dart';
+import 'package:savoniq/app/core/globals/toc_and_pp.dart';
 import 'package:savoniq/app/routes/app_pages.dart';
 
 import '../controllers/termsandcondition_controller.dart';
@@ -68,7 +69,7 @@ class TermsandconditionView extends GetView<TermsandconditionController> {
                     color: CustomColors.greybackground),
                 child: SingleChildScrollView(
                   child: Text(
-                    privacypolicy,
+                    TocAndPP.privacyPolicy,
                     style:  GoogleFonts.inter(
                         fontSize: 13.sp,
                         fontWeight: CustomFontWeight.kRegularWeight,
