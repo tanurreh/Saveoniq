@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rive/rive.dart';
 import 'package:savoniq/app/core/globals/globals.dart';
 import 'package:savoniq/app/modules/home/controllers/home_controller.dart';
@@ -65,7 +66,7 @@ class ShowDownloadProgressDialog extends StatelessWidget {
                     SizedBox(height: 9.h,),
                      Text(
                         '${cc.percentage.toInt().toString()} %',
-                        style: TextStyle(fontSize: 9.sp, color: CustomColors.white,fontWeight: CustomFontWeight.kRegularWeight),
+                        style: GoogleFonts.inter(fontSize: 9.sp, color: CustomColors.white,fontWeight: CustomFontWeight.kRegularWeight),
                       ),
                     ]
                   )),

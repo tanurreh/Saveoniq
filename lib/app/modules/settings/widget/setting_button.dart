@@ -1,3 +1,4 @@
+import 'package:google_fonts/google_fonts.dart';
 import 'package:savoniq/app/core/globals/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,9 +28,9 @@ class SettingButton extends StatelessWidget {
         child: Row(children: [
           Text(
             title,
-            style: TextStyle(
+            style: GoogleFonts.inter(
                 fontSize: 13.sp,
-                fontWeight: CustomFontWeight.kRegularWeight,
+                fontWeight: CustomFontWeight.kLightFontWeight,
                 color: CustomColors.white),
           ),
           const Spacer(),

@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:savoniq/app/core/components/components.dart';
 import 'package:savoniq/app/core/globals/globals.dart';
 import 'package:savoniq/app/modules/home/widgets/progress_bar_dialog.dart';
@@ -66,7 +67,7 @@ class HomeView extends GetView<HomeController> {
                                           CustomFontWeight.kRegularWeight),
                                   border: InputBorder.none,
                                 ),
-                                style: TextStyle(
+                                style: GoogleFonts.inter(
                                     color: CustomColors.textgrey,
                                     fontSize: 12.sp,
                                     fontWeight:

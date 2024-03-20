@@ -102,7 +102,7 @@ class HomeController extends GetxController {
     final url = _siteModel.links[0].link;
     File? downloadedFile = await FileDownloader.downloadFile(
       url: url,
-      name: title,
+      name: title.trim().replaceAll(' ', ''), 
       notificationType: NotificationType.all,
       onProgress: (String? text, double value) {
         changePercentage(value);

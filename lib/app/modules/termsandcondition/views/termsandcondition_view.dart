@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -30,13 +31,33 @@ class TermsandconditionView extends GetView<TermsandconditionController> {
                   width: 73.w,
                   child: SvgPicture.asset(CustomAssets.kAppLogo)),
               25.ht,
-              Text(
-                'Terms & Conditions',
-                style: TextStyle(
+              Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Terms',
+                            style: TextStyle(
                     fontSize: 13.sp,
                     fontWeight: CustomFontWeight.kSemiBoldFontWeight,
                     color: CustomColors.white),
-              ),
+                          ),
+                          TextSpan(
+                            text: ' & ',
+                            style: GoogleFonts.inter(
+                    fontSize: 13.sp,
+                    fontWeight: CustomFontWeight.kSemiBoldFontWeight,
+                    color: CustomColors.white),
+                          ),
+                          TextSpan(
+                            text: 'Condition',
+                            style:TextStyle(
+                    fontSize: 13.sp,
+                    fontWeight: CustomFontWeight.kSemiBoldFontWeight,
+                    color: CustomColors.white),
+                          ),
+                        ],
+                      ),
+                    ),
               27.ht,
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 21.w, vertical: 17.h),
@@ -48,7 +69,7 @@ class TermsandconditionView extends GetView<TermsandconditionController> {
                 child: SingleChildScrollView(
                   child: Text(
                     privacypolicy,
-                    style: TextStyle(
+                    style:  GoogleFonts.inter(
                         fontSize: 13.sp,
                         fontWeight: CustomFontWeight.kRegularWeight,
                         color: CustomColors.white),
@@ -101,7 +122,21 @@ class TermsandconditionView extends GetView<TermsandconditionController> {
                                 fontWeight: CustomFontWeight.kRegularWeight),
                           ),
                           TextSpan(
-                            text: 'Terms & Condition',
+                            text: 'Terms',
+                            style: TextStyle(
+                                color: CustomColors.white,
+                                fontSize: 13.sp,
+                                fontWeight: CustomFontWeight.kBoldFontWeight),
+                          ),
+                          TextSpan(
+                            text: ' & ',
+                            style: GoogleFonts.inter(
+                                color: CustomColors.white,
+                                fontSize: 13.sp,
+                                fontWeight: CustomFontWeight.kBoldFontWeight),
+                          ),
+                          TextSpan(
+                            text: 'Condition',
                             style: TextStyle(
                                 color: CustomColors.white,
                                 fontSize: 13.sp,

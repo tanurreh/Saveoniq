@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:savoniq/app/core/components/components.dart';
 import 'package:savoniq/app/core/globals/globals.dart';
+import 'package:savoniq/app/modules/settings/views/toc_pp_screen.dart';
 import 'package:savoniq/app/modules/settings/widget/setting_button.dart';
 
 
@@ -33,7 +34,9 @@ class SettingsView extends GetView<SettingsController> {
                   widget: SizedBox(
                     width: 50.w,
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    Get.to(()=> TocAndPpScreen(title: 'Terms & Condition', details: termAndCond,));
+                  },
                 ),
                 10.ht,
                 SettingButton(
@@ -41,20 +44,22 @@ class SettingsView extends GetView<SettingsController> {
                   widget: SizedBox(
                     width: 50.w,
                   ),
-                  onTap: () {},
+                  onTap: () {
+                       Get.to(()=> TocAndPpScreen(title: 'Privacy Policy', details: privacypolicy,));
+                  },
                 ),
                 10.ht,
-                SettingButton(
-                  title: 'Refer a friend',
-                  widget: SizedBox(
-                    width: 40.w,
-                    child: IconButton(
-                      icon: SvgPicture.asset(CustomAssets.kShareIcon),
-                      onPressed: () {},
-                    ),
-                  ),
-                  onTap: () {},
-                ),
+                // SettingButton(
+                //   title: 'Refer a friend',
+                //   widget: SizedBox(
+                //     width: 40.w,
+                //     child: IconButton(
+                //       icon: SvgPicture.asset(CustomAssets.kShareIcon),
+                //       onPressed: () {},
+                //     ),
+                //   ),
+                //   onTap: () {},
+                // ),
                 10.ht,
               ],
             ),
