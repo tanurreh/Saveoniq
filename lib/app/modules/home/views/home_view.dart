@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:savoniq/app/core/components/components.dart';
 import 'package:savoniq/app/core/globals/globals.dart';
+import 'package:savoniq/app/core/globals/loader_enum.dart';
 import 'package:savoniq/app/modules/home/widgets/progress_bar_dialog.dart';
 
 import '../controllers/home_controller.dart';
@@ -48,6 +49,7 @@ class HomeView extends GetView<HomeController> {
                             Expanded(
                               flex: 4,
                               child: TextFormField(
+                                readOnly:   hc.isLoading || hc.videoData != null,
                                 controller: hc.searchController,
                                 onChanged: (String? text){
                                   hc.update();
@@ -74,7 +76,7 @@ class HomeView extends GetView<HomeController> {
                                         CustomFontWeight.kRegularWeight),
                               ),
                             ),
-                            hc.searchController.text.isNotEmpty && !hc.isLoading && hc.siteModel == null && !hc.isError
+                            hc.searchController.text.isNotEmpty && ( hc.currentState == Loader.start || hc.currentState == Loader.error)
                                 ? Expanded(
                                     flex: 1,
                                     child: IconButton(
@@ -93,17 +95,17 @@ class HomeView extends GetView<HomeController> {
                               padding: EdgeInsets.symmetric(vertical: 20.h),
                               child: CustomElevatedButton(
                                 text:
-                                    hc.siteModel == null ? 'Search' : 'Cancel',
+                                    hc.videoData == null ? 'Search' : 'Cancel',
                                 onPressed: hc.isLoading
                                     ? () {}
                                     : () {
-                                        if (hc.siteModel == null) {
+                                        if (hc.videoData == null) {
                                           if (hc.searchController.text
                                               .isNotEmpty) {
                                             if (hc
                                                 .searchController.text.isURL) {
                                               FocusScope.of(context).unfocus();
-                                              hc.getLinksData(hc
+                                              hc.getVideoData(hc
                                                   .searchController.text
                                                   .toString());
                                             } else {
@@ -128,11 +130,8 @@ class HomeView extends GetView<HomeController> {
                         ),
                       ),
                       21.ht,
-                      if (hc.isError)
-                        if (hc.siteModel != null &&
-                            hc.isLoading == false &&
-                            hc.siteModel.title.toString() != 'null' &&
-                            hc.siteModel.title.isNotEmpty)
+                     
+                        if (hc.currentState == Loader.preview)
                           Column(
                             children: [
                               Container(
@@ -144,7 +143,7 @@ class HomeView extends GetView<HomeController> {
                                   color: CustomColors.greybackground,
                                   image: DecorationImage(
                                       image:
-                                          NetworkImage(hc.siteModel.thumbnail),
+                                          NetworkImage(hc.videoData!.images![0]),
                                       fit: BoxFit.cover),
                                 ),
                                 child: Image.asset(
@@ -157,12 +156,9 @@ class HomeView extends GetView<HomeController> {
                               21.ht,
                               CustomElevatedButton(
                                   text: 'DOWNLOAD',
-                                  onPressed: () {
-                                    hc.downloadMedia(
-                                        '${hc.siteModel.title}.mp4');
-                                    showProgressDialog(
-                                        message: hc.percentage.toString(),
-                                        value: hc.percentage);
+                                  onPressed: () async  {
+                                   hc.downloadVideo(hc.videoData!.url!);
+                                   
                                   },
                                   width: 335.w),
                                   //admin user
@@ -170,7 +166,7 @@ class HomeView extends GetView<HomeController> {
                                   //..undo
                             ],
                           )
-                        else
+                        else if(hc.currentState == Loader.error)
                           Column(
                             children: [
                               Container(
@@ -210,8 +206,8 @@ class HomeView extends GetView<HomeController> {
                                   },
                                   width: 332.w)
                             ],
-                          ),
-                      if (hc.isLoading == true)
+                          ) else const  SizedBox(),
+                      if(hc.currentState == Loader.loading)
                         Container(
                             height: 180.h,
                             width: 335.w,

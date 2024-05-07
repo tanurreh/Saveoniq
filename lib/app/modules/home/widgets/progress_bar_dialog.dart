@@ -87,7 +87,7 @@ void showProgressDialog({required String message, required double value}) {
   );
 }
 
-void hideProgressDialog() {
+Future<void> hideProgressDialog() async {
   Get.back();
   return;
 }

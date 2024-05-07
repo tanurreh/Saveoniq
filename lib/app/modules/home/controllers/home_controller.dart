@@ -6,13 +6,22 @@ import 'package:get/get.dart';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:direct_link/direct_link.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
+import 'package:savoniq/app/core/globals/loader_enum.dart';
+import 'package:savoniq/app/core/model/model.dart';
 import 'package:savoniq/app/modules/home/widgets/download_dialog.dart';
+import 'package:savoniq/app/modules/home/widgets/loading_indicator.dart';
 import 'package:savoniq/app/modules/home/widgets/progress_bar_dialog.dart';
+import 'package:http/http.dart' as http;
 
 class HomeController extends GetxController {
   final searchController = TextEditingController();
+  Loader currentState = Loader.start;
+
+  void changeLoaderState(Loader value) {
+    currentState = value;
+    update();
+  }
 
   bool isSearchLoading = true;
   void changeSearchLoading() {
@@ -35,9 +44,6 @@ class HomeController extends GetxController {
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
-  final _directLink = DirectLink();
-  var _siteModel;
-  get siteModel => _siteModel;
 
   void toggleLoading(loading) {
     _isLoading = loading;
@@ -47,6 +53,7 @@ class HomeController extends GetxController {
   File? myFile;
   void setFile(File downFile) {
     myFile = downFile;
+    log(myFile!.path);
     update();
   }
 
@@ -59,64 +66,114 @@ class HomeController extends GetxController {
   }
 
   //getlinkdata
-  Future<void> getLinksData(String url) async {
-    try {
-      _isLoading = true;
-      update();
+  GetLinkModel? linkResponse;
+  VideoDataModel? videoData;
 
-      _siteModel = await _directLink.check(url);
-      if (siteModel?.title.toString() == 'null') {
-        Fluttertoast.showToast(
-          msg: 'Please wait while we fetch Data',
-        );
-
-        for (int i = 1; i < 4; i++) {
-          if (siteModel?.title.toString() == 'null') {
-            log('🙌🙌 title is null so checking $i');
-
-            _siteModel = await _directLink.check(url); // again checking
-          } else {
-            log('i contain value so returning from loop🌹🌹🌹');
-            break;
-          }
-        }
-      }
-      changeIsError();
-    } catch (e) {
-      Fluttertoast.showToast(msg: 'An error occurred while getting video');
-
-      log('an error occurred in getLinksData ❤❤❤❤ $e');
-    } finally {
-      _isLoading = false;
-      update();
+  Future<void> getVideoData(String downloadUrl) async {
+    changeLoaderState(Loader.loading);
+    videoData = await getVideoResponse(downloadUrl);
+    update();
+    if (videoData != null) {
+      changeLoaderState(Loader.preview);
+    } else {
+      changeLoaderState(Loader.error);
     }
+  }
+
+  Future<VideoDataModel?> getVideoResponse(String downloadUrl) async {
+    try {
+      log(downloadUrl.toString());
+      String url =
+          'https://getpreview-5tbmt3daaa-uc.a.run.app?url=$downloadUrl';
+      log(url.toString());
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer 8168fae4-da9c-43c0-858d-48cfd0ed220b',
+          'Content-Type': 'application/json',
+        },
+      );
+      log(response.statusCode.toString());
+      if (response.statusCode == 200) {
+        return VideoDataModel.fromJson(response.body);
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+       Fluttertoast.showToast(msg: e.toString());
+    }
+    return null;
+  }
+
+  Future<void> downloadVideo(String downloadUrl) async {
+    await Get.showOverlay(
+      asyncFunction: () async {
+        linkResponse = await _fetchLink(downloadUrl);
+        update();
+      },
+      loadingWidget: LoadingIndicator().loadingIndicator,
+    );
+    if (linkResponse != null && linkResponse!.url.isURL) {
+      showProgressDialog(message: percentage.toString(), value: percentage);
+      await downloadMedia(
+        videoData!.title!,
+        linkResponse!.url,
+      );
+       Future.delayed(const Duration(milliseconds: 6000), () {
+       showDownloadDialog(
+            message: videoData!.title!.toString(),
+            downloadUrl: videoData!.images![0],
+            onClose: () {
+              Get.back();
+              onDownloadClose();
+            },
+            path: myFile!.path);});
+    } else {
+      Fluttertoast.showToast(msg: 'Something went wrong, Unable to download');
+    }
+  }
+
+  Future<GetLinkModel?> _fetchLink(String downloadUrl) async {
+    try {
+      log(downloadUrl.toString());
+      String url =
+          'https://getdownloadlink-5tbmt3daaa-uc.a.run.app?url=$downloadUrl';
+      log(url.toString());
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer 8168fae4-da9c-43c0-858d-48cfd0ed220b',
+          'Content-Type': 'application/json',
+        },
+      );
+      log(response.statusCode.toString());
+      if (response.statusCode == 200) {
+        log(response.body.toString());
+        return GetLinkModel.fromJson(response.body);
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      log(e.toString());
+       Fluttertoast.showToast(msg: e.toString());
+    }
+    return null;
   }
 
   //Download media
   Future<void> downloadMedia(
     String title,
+    String url,
   ) async {
-    //  final Directory output = await getTemporaryDirectory();
-    //                         final String newFilePath = '${output.path}/newfile.mp4';
-    //                         File? sendedfile = File(newFilePath);
-    final url = _siteModel.links[0].link;
     File? downloadedFile = await FileDownloader.downloadFile(
       url: url,
-      name: title.trim().replaceAll(' ', ''), 
+      name: title.trim().replaceAll(' ', ''),
       notificationType: NotificationType.all,
       onProgress: (String? text, double value) {
         changePercentage(value);
       },
-      onDownloadCompleted: (path) {
-        hideProgressDialog();
-        showDownloadDialog(
-            message: siteModel.title.toString(),
-            downloadUrl: siteModel.thumbnail,
-            onClose: () {
-              Get.back();
-              onDownloadClose();
-            },
-            path: path);
+      onDownloadCompleted: (path) async {
+     hideProgressDialog();
       },
       onDownloadError: (errorMessage) {
         Fluttertoast.showToast(msg: errorMessage);
@@ -139,7 +196,9 @@ class HomeController extends GetxController {
   void onDownloadClose() {
     changeIsError();
     toggleLoading(false);
-    _siteModel = null;
+    linkResponse = null;
+    videoData = null;
+    changeLoaderState(Loader.start);
     _percentage = 0.0;
     searchController.clear();
     update();

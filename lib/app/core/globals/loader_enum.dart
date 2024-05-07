@@ -1,0 +1,1 @@
+enum  Loader {start, loading ,preview, error}
